@@ -1,5 +1,34 @@
-let KmonoTri =[
-    
+let KMonoTri =[
+    {
+        natureTroncon:"aerien nu",
+        ameTroncon:"cuivre",
+        ktri:21,
+        kmono:21
+    },
+    {
+        natureTroncon:"aerien isole",
+        ameTroncon:"cuivre",
+        ktri:18.6,
+        kmono:20
+    },
+    {
+        natureTroncon:"aerien isole",
+        ameTroncon:"aluminium",
+        ktri:14,
+        kmono:16
+    },
+    {
+        natureTroncon:"souterrain",
+        ameTroncon:"cuivre",
+        ktri:20,
+        kmono:24
+    },
+    {
+        natureTroncon:"souterrain",
+        ameTroncon:"aluminium",
+        ktri:15.3,
+        kmono:18.4
+    }
 ]
 
 let table=[
@@ -596,6 +625,24 @@ function TauxDeCharge(i , CumulPuiss){
     }
 
 
+}
+
+// Détermination kf 
+function CoefFoisonnement (Cumul){
+    if(NatReseau === "Triphasé"){
+                 let Table = kfTriphase;
+             }
+    else if (NatReseau === "Monophase"){
+                let Table = kfTriphase;
+    }
+    for(let i = 0;i<Table.length;i++){
+        if(Cumul>=Table[i].minCumul  && Cumul<=Table[i].maxCumul){
+            return Table[i].kf
+        }
+        else {
+           return 0;    
+        }
+    } 
 }
 
 //

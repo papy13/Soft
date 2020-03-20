@@ -513,9 +513,10 @@ let lengthTable = table.length;
       return res;
   }
 
-  function CumulPuissanceNoeud(kf ,i, colName1 , colName2){
-      let CumPuiFois = CumulPuissanceFoisonnee(kf,i,colName1,Po); // Colname1 parce que la puissance foisonnée concerne le nombre d'abbonnes au noeuds 
-      let cumulChargePro = Cumul(i,colName2); // ColName 2 : Cumul charge de puissance 
+
+  function CumulPuissanceNoeud(cumulChargePro ,CumPuiFois){
+    //CumulChargePro : Cumul des charges professionnels au noeud( fonction cumul(i, colonnePuissanceChargePro)
+      //CumPuiFois: en utilisant fonction cumulPuissanceFoissonnée
       let res = CumPuiFois + cumulChargePro;
       return res;
   }
@@ -523,55 +524,61 @@ let lengthTable = table.length;
 
 
  // Chute de tension au nœud actuel
- function ChuteTensionNoeud(i, CumulPuiss){
+ function ChuteTensionNoeud(i , CumulPuiss){
      /*E nfonction de l'indice du noeud dans le tableau, on recupère les paramètres tels que la réactance X1 et la résistivité R0 
        puis on calcule les Chutes de Tension au noeud i*/
      //CumulPuiss = Cumul de la puissance au noeud i à calculer à l'aide dela fonction CumulPuissanceNoeud
-     if (Tab[i].Nature === "AerienNu"){
+     if (Tab[i].Nature === "aerien nu"){
          X1 = 0,35 ;
      }
-     else if (Tab[i].Nature === "AerienIsole" || "Souterrain"){
+     else if (Tab[i].Nature === "aerien isole" || "souterrain"){
          X1 = 0,1 ;
      }
-    if (Tab[i].Ame === "Aluminium"){
+    if (Tab[i].Ame === "aluminium"){
          R0 = 30 ;
      }
-     else if (Tab[i].Nature === "Cuivre"){
+     else if (Tab[i].Ame === "cuivre"){
          R0 = 18 ;
      }
        
      let Result = CumulPuiss*Tab[i].Nature*((R0/Tab[i].Section) + X1*Math.sqrt((1/(CosPhi*CosPhi))-1))/TensionNoeudActuel(i-1);
   
-     if(NatReseau === "Triphasé"){
+     if(NatReseau === "triphase"){
          //Chute de tension au nœud actuel - Triphasé
          return Result;
      }
-     else if (NatReseau === "Monophase"){
+     else if (NatReseau === "monophase"){
          //Chute de tension au nœud actuel - Monophasé
          return 2*Result;
      }
  }
 //Cumul chute de tension au noeud actuel
 
- function CumulChuteTensionNoeudActuel(i){
+ function CumulChuteTensionNoeudActuel(i , cumulPuiss){
+      //CumulPuiss = Cumul de la puissance au noeud i à calculer à l'aide dela fonction CumulPuissanceNoeud
+
   let CumulTensionAmont = 0;
-  let chuteNoeud = ChuteTensionNoeud(i);
+  let chuteNoeud = ChuteTensionNoeud(i,cumulPuiss); //
   // Calcul cumulTension noeud Tension
   for(let k=i ; k>0 ; k--){
+      
+      
    CumulTensionAmont +=ChuteTensionNoeud(k) 
   }
   let res = chuteNoeud + CumulTensionAmont;
   return res ;
  }
- TensionNoeudActuel
- function TensionNoeudActuel(i){
- 
+// TensionNoeudActuel
+ function TensionNoeudActuel(i ){
+     //cumulPuiss: cumulPuissance(fonction cumulPuissanceNoeud(i))
+    //      cumulPuissAmont: (fonction cumulPuissanceNoeud(i-1)
+     
   if(i==0 ){
    return res = U0;
- }
+ 
   else{
-       let tensionAmont = TensionNoeudAmont(i-1);
-       let chuteTensionNoeudActuel = ChuteTensionNoeud(i);
+       let tensionAmont = TensionNoeudActuel(i-1 );
+       let chuteTensionNoeudActuel = ChuteTensionNoeud(i , cumulPuiss);
        let result = tensionAmont - chuteTensionNoeudActuel;
   return result ;
   }

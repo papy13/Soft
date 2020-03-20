@@ -638,7 +638,8 @@ function TauxDeCharge(i , ICable){
                     }
                 
                 
-                let Inominal = KMono*Math.pow(Tab[i].Section,0.6)                   let result = 100*ICable/Inominal;
+                let Inominal = KMono*Math.pow(Tab[i].Section,0.6);     
+                let result = 100*ICable/Inominal;
                 return result ;
             }   
                 

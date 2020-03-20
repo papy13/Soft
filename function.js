@@ -608,7 +608,8 @@ let lengthTable = table.length;
 
 function TauxDeCharge(i , ICable){
     //ICable = Intensité cable noeud actuel(fonction IntensiteCable)
-
+    let kTri= 0;
+    let kMono= 0
     for(let i =0 ; i<lengthTable ; i++){
         if(Tab[i].Section===table[i].section && Tab[i].Nature===table[i].natureTroncon && Tab[i].Ame===table[i].ameTroncon){
             if(NatReseau==='triphase' && table[i].intensiteNominaleTri !=0 ){
@@ -619,12 +620,27 @@ function TauxDeCharge(i , ICable){
                 return result;
             }
             else if(NatReseau==='triphase' && table[i].intensiteNominaleTri ==0){
-                let Inominal = 0      // Creer tableau pour effectuer le calcul
+                    for(let j = 0 ; j<6 ; j++){
+                        if( Kmonotri[j].natureTroncon===Tab[i].Nature &&  Kmonotri[j].ameTroncon===Tab[i].Ame){
+                            kTri= kmonotri[j].ktri;
+                        }
+                    }
+               let Inominal = KTri*Math.pow(Tab[i].Section,0.6)  
+               let result = 100*ICable/Inominal;
+                return result ; 
 
             }
             else{
-                let Inominal = 0     // Creer tableau pour effectuer le calcul
-            }
+                for(let j = 0 ; j<6 ; j++){
+                        if( Kmonotri[j].natureTroncon===Tab[i].Nature &&  Kmonotri[j].ameTroncon===Tab[i].Ame){
+                            kMono= kmonotri[j].kmono;
+                        }
+                    }
+                
+                
+                let Inominal = KMono*Math.pow(Tab[i].Section,0.6)                   let result = 100*ICable/Inominal;
+                return result ;
+            }   
                 
             }
         }

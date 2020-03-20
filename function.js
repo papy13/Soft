@@ -569,36 +569,35 @@ let lengthTable = table.length;
   return res ;
  }
 // TensionNoeudActuel
- function TensionNoeudActuel(i ){
-     //cumulPuiss: cumulPuissance(fonction cumulPuissanceNoeud(i))
-    //      cumulPuissAmont: (fonction cumulPuissanceNoeud(i-1)
+ function TensionNoeudActuel(i, CumulChuteTensionNoeud){
+     //CumulChuteTensionNoeud: cumul chutes de tension au noeud i(fonction CumulChuteTensionNoeudActuel(i)
      
   if(i==0 ){
    return res = U0;
- 
   else{
-       let tensionAmont = TensionNoeudActuel(i-1 );
-       let chuteTensionNoeudActuel = ChuteTensionNoeud(i , cumulPuiss);
-       let result = tensionAmont - chuteTensionNoeudActuel;
+       //let tensionAmont = TensionNoeudActuel(i-1);
+       //let chuteTensionNoeudActuel = ChuteTensionNoeud(i , cumulPuiss);
+       let result = U0 - CumulChuteTensionNoeud;
   return result ;
   }
 
 // //Chute de tension relative
- function ChuteTensionRelative(i){
-
-     return 100*CumulChuteTensionNoeudActuel(i)/U0; 
+ function ChuteTensionRelative(i, CumulPuiss){
+    //CumulPuiss = Cumul de la puissance au noeud i à calculer à l'aide dela fonction CumulPuissanceNoeud
+     return 100*CumulChuteTensionNoeudActuel(i, CumulPuiss)/U0; 
  }
 
 // //Intensité Cable
- function IntensiteCable(i,CumulPuiss){
+ function IntensiteCable(i,CumulPuiss, tensionNoeudAct){
      //CumulPuiss = Cumul de la puissance au noeud i à calculer à l'aide dela fonction CumulPuissanceNoeud
-     let Result = CumulPuiss/(TensionNoeudActuel(i)*CosPhi);
+     // tensionNoeudAct = Tension Noeud Actuel (fonction TensionNoeudActuel)
+     let Result = CumulPuiss/(tensionNoeudAct*CosPhi);
     
-     if(NatReseau === "Triphasé"){
+     if(NatReseau === "triphase"){
          //Intensité Cable - Triphasé
          return Result/Math.sqrt(3);
      }
-     else if (NatReseau === "Monophase"){
+     else if (NatReseau === "monophase"){
          //Intensité Cable - Monophasé
          return Result;
      }
@@ -607,11 +606,11 @@ let lengthTable = table.length;
 
 // TAUX DE CHARGE 
 
-function TauxDeCharge(i , CumulPuiss){
-    let ICable = IntensiteCable(i , CumulPuiss);
+function TauxDeCharge(i , ICable){
+    //ICable = Intensité cable noeud actuel(fonction IntensiteCable)
 
     for(let i =0 ; i<lengthTable ; i++){
-        if(section===table[i].section && natureTroncon===table[i].natureTroncon && ameTroncon===table[i].ameTroncon){
+        if(Tab[i].Section===table[i].section && Tab[i].Nature===table[i].natureTroncon && Tab[i].Ame===table[i].ameTroncon){
             if(NatReseau==='triphase' && table[i].intensiteNominaleTri !=0 ){
                 let result = 100*ICable/table[i].intensiteNominaleTri;
                 return result;

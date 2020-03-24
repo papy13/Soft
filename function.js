@@ -521,10 +521,26 @@ let lengthTable = table.length;
       return res;
   }
 
+ //TabTension a creer 
+function Tension(i){
+    let result = 0 ; 
+    for(let k = 0 ; k< TabTension.length ; k++){
+        if(TabTension[k].colNoeud === Tab[i].NoeudAmont){
+            result = TabTension[k].colTension;
+            return result ;
+        }
+    }
+    
+}
+
+
+
+
 
 
  // Chute de tension au nœud actuel
  function ChuteTensionNoeud(i , CumulPuiss){
+     let TensionNoeudAmont = Tension(i) ;// recuperer dans un tableau de tension  par noeud 
      /*E nfonction de l'indice du noeud dans le tableau, on recupère les paramètres tels que la réactance X1 et la résistivité R0 
        puis on calcule les Chutes de Tension au noeud i*/
      //CumulPuiss = Cumul de la puissance au noeud i à calculer à l'aide dela fonction CumulPuissanceNoeud
@@ -541,7 +557,7 @@ let lengthTable = table.length;
          R0 = 18 ;
      }
        
-     let Result = CumulPuiss*Tab[i].Nature*((R0/Tab[i].Section) + X1*Math.sqrt((1/(CosPhi*CosPhi))-1))/TensionNoeudActuel(i-1);
+     let Result = CumulPuiss*Tab[i].Nature*((R0/Tab[i].Section) + X1*Math.sqrt((1/(CosPhi*CosPhi))-1))/TensionNoeudAmont);
   
      if(NatReseau === "triphase"){
          //Chute de tension au nœud actuel - Triphasé
@@ -577,7 +593,7 @@ let lengthTable = table.length;
   else{
        //let tensionAmont = TensionNoeudActuel(i-1);
        //let chuteTensionNoeudActuel = ChuteTensionNoeud(i , cumulPuiss);
-       let result = U0 - CumulChuteTensionNoeud;
+       let result = Tension(i) - ChuteTensionNoeud(i, cumulPuiss);
   return result ;
   }
 

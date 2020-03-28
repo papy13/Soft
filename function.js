@@ -507,6 +507,21 @@ let lengthTable = table.length;
      return Cumul;
  }
 
+function TabCumulAbonnes(){
+    let TabCumul;
+    let Cumul = 0; 
+    //TabCumul est un tableau à deux colonnes {"NumeroNoeud","CumulAbonnes"}
+    for (let i=Max-1; i>=0;i--){
+        Cumul = Tab[i].NombreNoeudAbonnes;
+        for (let j=Max-1; j>i; j--){
+            if(Tab[i].NumNoeudActuel===Tab[j].NumNoeudAmont){
+                Cumul+=Tab[i].NombreNoeudAbonnes;
+            }
+        }
+        TabCumul+={Tab[i].NumNoeudActuel,Cumul};
+    }
+}
+
  function CumulPuissanceFoisonnee(kf,i,colName){
      let cumul = Cumul(i,colName);
      let res = kf*cumul*P0;

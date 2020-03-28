@@ -510,12 +510,17 @@ let lengthTable = table.length;
 function TabCumulAbonnes(){
     let TabCumul;
     let Cumul = 0; 
-    //TabCumul est un tableau à deux colonnes {"NumeroNoeud","CumulAbonnes"}
+    //TabCumul est un tableau à deux colonnes {"NumNoeud","CumulAbonnes"}
     for (let i=Max-1; i>=0;i--){
         Cumul = Tab[i].NombreNoeudAbonnes;
         for (let j=Max-1; j>i; j--){
             if(Tab[i].NumNoeudActuel===Tab[j].NumNoeudAmont){
-                Cumul+=Tab[i].NombreNoeudAbonnes;
+                for(let k=0;k<TabCumul.Length; k++){
+                    if(Tab[j].NumNoeudAmont === TabCumul[k].NumNoeud){
+                        Cumul+=TabCumul[k].NumNoeud;
+                        break;
+                    }
+                }
             }
         }
         TabCumul+={Tab[i].NumNoeudActuel,Cumul};

@@ -479,7 +479,7 @@ let lengthTable = table.length;
 
 
  let Tab = [];
- let Max = tab.length;
+ let Max = Tab.length;
  let CosPhi = "Valeur à recup du form 1";
  let NatReseau = "Valeur Type réseau Mono ou Tri à recup du form 1"
  let U0 = "Valeur Tension Initiale à recup du form1";
@@ -515,16 +515,24 @@ function TabCumulAbonnes(){
         Cumul = Tab[i].NombreNoeudAbonnes;
         for (let j=Max-1; j>i; j--){
             if(Tab[i].NumNoeudActuel===Tab[j].NumNoeudAmont){
-                for(let k=0;k<TabCumul.Length; k++){
-                    if(Tab[j].NumNoeudAmont === TabCumul[k].NumNoeud){
-                        Cumul+=TabCumul[k].NumNoeud;
-                        break;
-                    }
-                }
+               Cumul+=CumulAbonne(Tab[i].NumNoeudActuel);
+                         
             }
         }
         TabCumul+={Tab[i].NumNoeudActuel,Cumul};
     }
+}
+
+
+function CumulAbonne(numNoeud){
+     for(let k=0;k<TabCumul.Length; k++){
+        if(numNoeud ===TabCumul[k].NumNoeud){
+         let result = TabCumul[k].CumulAbonnes
+         return result ;
+            
+        }
+         
+     }   
 }
 
  function CumulPuissanceFoisonnee(kf,i,colName){
@@ -644,43 +652,41 @@ function Tension(i){
 
 function TauxDeCharge(i , ICable){
     //ICable = Intensité cable noeud actuel(fonction IntensiteCable)
+    let cpt = 0;
     let kTri= 0;
     let kMono= 0
     for(let i =0 ; i<lengthTable ; i++){
         if(Tab[i].Section===table[i].section && Tab[i].Nature===table[i].natureTroncon && Tab[i].Ame===table[i].ameTroncon){
             if(NatReseau==='triphase' && table[i].intensiteNominaleTri !=0 ){
                 let result = 100*ICable/table[i].intensiteNominaleTri;
+                cpt =1;
                 return result;
             }else if(NatReseau==='monophase' && table[i].intensiteNominaleMono !=0){
                 let result = 100*ICable/table[i].intensiteNominaleMono;
+                cpt =1;
                 return result;
             }
-            else if(NatReseau==='triphase' && table[i].intensiteNominaleTri ==0){
-                    for(let j = 0 ; j<6 ; j++){
-                        if( Kmonotri[j].natureTroncon===Tab[i].Nature &&  Kmonotri[j].ameTroncon===Tab[i].Ame){
-                            kTri= kmonotri[j].ktri;
-                        }
-                    }
-               let Inominal = KTri*Math.pow(Tab[i].Section,0.6)  
-               let result = 100*ICable/Inominal;
-                return result ; 
-
-            }
-            else{
-                for(let j = 0 ; j<6 ; j++){
-                        if( Kmonotri[j].natureTroncon===Tab[i].Nature &&  Kmonotri[j].ameTroncon===Tab[i].Ame){
-                            kMono= kmonotri[j].kmono;
-                        }
-                    }
-                
-                
-                let Inominal = KMono*Math.pow(Tab[i].Section,0.6);     
-                let result = 100*ICable/Inominal;
-                return result ;
-            }   
+           
                 
             }
-        }
+        
+    }
+    if(cpt===1){
+       for(let j = 0 ; j<6 ; j++){
+             if( Kmonotri[j].natureTroncon===Tab[i].Nature &&  Kmonotri[j].ameTroncon===Tab[i].Ame ){
+                if(NatReseau==='triphase'){
+                    kTri= kmonotri[j].ktri;
+                   let Inominal = KTri*Math.pow(Tab[i].Section,0.6)  
+                   let result = 100*ICable/Inominal;
+                   return result ; 
+                  }else{
+                       kMono= kmonotri[j].kmono;
+                       let Inominal = KMono*Math.pow(Tab[i].Section,0.6);     
+                       let result = 100*ICable/Inominal;
+                       return result ;
+                   }
+                }
+      }   
     }
 
 
